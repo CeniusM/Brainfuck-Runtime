@@ -1,16 +1,12 @@
 #pragma once
+
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
-struct Instructions
-{
-	int capacity;
-	int currentCount;
-	char* instructions;
-};
+#include "Types.h"
+#include "ThrowHelper.h"
 
-void InitInstructions(Instructions& i)
-{
-	i.capacity = 100;
-	i.currentCount = 0;
-	i.instructions = (char*)malloc(i.capacity * sizeof(char));
-}
+void InitInstructions(const char* path, Instructions* i);
+
+void CompileInstructions(Instructions* instructions, Executable* executable, bool debugMode);
