@@ -5,6 +5,7 @@
 
 #include "Types.h"
 #include "ThrowHelper.h"
+#include "Misc.h"
 
 void RunExecutable(Executable* ex, bool debugEnabled);
 

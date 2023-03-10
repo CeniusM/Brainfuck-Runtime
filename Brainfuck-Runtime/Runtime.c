@@ -1,15 +1,27 @@
 #include "Runtime.h"
 
-void RunDebugMode(Execution* exc, bool wasError)
+#define gotoxy(x,y) printf("\033[%d;%dH", (y), (x))
+
+void RunDebugMode(Execution* exc, bool wasError, const char* message)
 {
 	bool running = true;
 	int c;
 	int lookingPointer = exc->memoryPointer;
 	while (running)
 	{
+#define gotoxy(x,y) printf("\033[%d;%dH", (y), (x))
 		// Set cursor
+		gotoxy(0, 0);
 		// clear
+		printf("                                                           \n                                                           \n                                                           \n                                                           \n                                                           \n                                                           \n                                                           \n                                                           \n                                                           \n                                                           \n                                                           \n                                                           \n                                                           \n                                                           \n                                                           \n                                                           \n                                                           \n                                                           \n"); // lol
 		// Set cursor
+		gotoxy(0, 0);
+
+		if (wasError)
+		{
+			printf("Error occurred\n");
+			printf("Press \"e\" to throw error\n\n");
+		}
 
 		printf("Press \"n\" to run next instruct\n");
 		printf("Press \"c\" to resume execution\n");
@@ -31,7 +43,7 @@ void RunDebugMode(Execution* exc, bool wasError)
 			else
 			{
 				int value = exc->memory[i];
-				printf("val:%d, char:\'%c\'", value, (char)value);
+				printf("val:%d, char:\'%uc\'", value, (char)value);
 			}
 			if (i == lookingPointer)
 				printf(" <--");
@@ -50,7 +62,18 @@ void RunDebugMode(Execution* exc, bool wasError)
 				exc->memory[lookingPointer]++;
 			else if (c == ArrowKeyLeft && lookingPointer < 3000 && lookingPointer >= 0)
 				exc->memory[lookingPointer]--;
-
+		}
+		else if (c == 'n')
+		{
+			RunInstruct(exc, true);
+		}
+		else if (c == 'c')
+		{
+			running = false;
+		}
+		else if (wasError && c == 'e')
+		{
+			ThrowExcepction(message);
 		}
 		//if (c)
 	}
@@ -61,7 +84,7 @@ void Error(Execution* exc, const char* str, bool debugEnabled)
 	if (debugEnabled)
 	{
 		// Run
-		RunDebugMode(exc, true);
+		RunDebugMode(exc, true, str);
 	}
 	else
 		ThrowExcepction(str);
@@ -69,19 +92,23 @@ void Error(Execution* exc, const char* str, bool debugEnabled)
 
 void RunExecutable(Executable* ex, bool debugEnabled)
 {
-	Execution exc = { 0 };
-	exc.length = ex->length;
-	exc.stackSize = ex->stackSizeNeeded;
-	exc.instructions = ex->instructions;
-	exc.stackPointer = 0;
-	while (exc.stack == NULL)
-		exc.stack = malloc(sizeof(int) * exc.stackSize);
-	exc.executionPointer = 0;
+	Execution* exc = NULL;
+	while (exc == NULL)
+		exc = malloc(sizeof(Execution));
+	Memset(exc, 0, sizeof(Execution));
+
+	exc->length = ex->length;
+	exc->stackSize = ex->stackSizeNeeded;
+	exc->instructions = ex->instructions;
+	exc->stackPointer = 0;
+	while (exc->stack == NULL)
+		exc->stack = malloc(sizeof(int) * exc->stackSize);
+	exc->executionPointer = 0;
 	char key = 0;
 
-	while (exc.executionPointer < exc.length)
+	while (exc->executionPointer < exc->length)
 	{
-		RunInstruct(&exc, debugEnabled);
+		RunInstruct(exc, debugEnabled);
 	}
 }
 
@@ -139,7 +166,7 @@ inline void RunInstruct(Execution* exc, bool debugEnabled)
 		}
 		break;
 	case Brain_DebugSymbole:
-		RunDebugMode(&exc, false);
+		RunDebugMode(&exc, false, "");
 		break;
 	default:
 		break;

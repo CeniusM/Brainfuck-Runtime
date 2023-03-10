@@ -129,17 +129,21 @@
   <ItemGroup>
     <ClCompile Include="Compiler.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="Misc.c" />
     <ClCompile Include="Runtime.c" />
     <ClCompile Include="ThrowHelper.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Compiler.h" />
+    <ClInclude Include="Misc.h" />
     <ClInclude Include="Runtime.h" />
     <ClInclude Include="ThrowHelper.h" />
     <ClInclude Include="Types.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="AddingTwoValues.bf" />
     <None Include="HelloWorld.bf" />
+    <None Include="ROT13.bf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
